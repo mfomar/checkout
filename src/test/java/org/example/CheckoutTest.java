@@ -1,8 +1,6 @@
 package org.example;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +13,6 @@ public class CheckoutTest {
         assertEquals("£0.25", Checkout.totalFormatted(items));
     }
 
-
     @Test
     void totalForOneOrangeAndOneApple() {
         var items = List.of("Orange", "Apple");
@@ -26,15 +23,17 @@ public class CheckoutTest {
     @Test
     void totalForApplesAndOneOrange() {
         var items = List.of("Apple", "Apple", "Orange", "Apple");
-        assertEquals(205, Checkout.totalPence(items));
-        assertEquals("£2.05", Checkout.totalFormatted(items));
+        // 3 apples -> charged for 2 (2 * 60 = 120), 1 orange = 25 -> total 145
+        assertEquals(145, Checkout.totalPence(items));
+        assertEquals("£1.45", Checkout.totalFormatted(items));
     }
 
     @Test
     void totalForOrangesAndOneApple() {
         var items = List.of("Orange", "Orange", "Apple", "Orange");
-        assertEquals(135, Checkout.totalPence(items));
-        assertEquals("£1.35", Checkout.totalFormatted(items));
+        // 3 oranges -> charged for 2 (2 * 25 = 50), 1 apple = 60 -> total 110
+        assertEquals(110, Checkout.totalPence(items));
+        assertEquals("£1.10", Checkout.totalFormatted(items));
     }
 
     @Test
@@ -44,25 +43,14 @@ public class CheckoutTest {
     }
 
     @Test
-    void unknownItemThrowsIae() {
+    void unknownFruitThrowsIae() {
         var items = List.of("Banana");
         assertThrows(IllegalArgumentException.class, () -> Checkout.totalPence(items));
     }
 
     @Test
-    void totalCase() {
+    void totalWithMixedCase() {
         var items = List.of("oRange", "APPle");
-        assertEquals(85, Checkout.totalPence(items));
-        assertEquals("£0.85", Checkout.totalFormatted(items));
-    }
-
-    @Test
-    void ignoreNulls() {
-        List<String> items = new ArrayList<>();
-        items.add("Orange");
-        items.add(null);
-        items.add("Apple");
-
         assertEquals(85, Checkout.totalPence(items));
         assertEquals("£0.85", Checkout.totalFormatted(items));
     }

@@ -12,32 +12,40 @@ public final class Checkout {
 
     }
 
-    public static int totalPence(List<String> fruits) {
+    public static int totalPence(List<String> items) {
 
-        Objects.requireNonNull(fruits, "fruits must not be null");
+        Objects.requireNonNull(items, "items must not be null");
 
-        int total = 0;
 
-        for (String fruit : fruits) {
+        int appleCount = 0;
+        int orangeCount = 0;
+
+        for (String fruit : items) {
+
             if (fruit == null) continue;
 
             String item = fruit.trim().toLowerCase();
 
             switch (item) {
                 case "apple":
-                    total += PRICE_APPLE_PENCE;
+                    appleCount++;
                     break;
                 case "orange":
-                    total += PRICE_ORANGE_PENCE;
+                    orangeCount++;
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown item: " + fruit);
             }
         }
 
-        return total;
-    }
+        // BOGOF on apples
+        int chargedApples = (appleCount + 1) / 2;
 
+        // 3 for the price of 2 on oranges
+        int chargedOranges = (orangeCount / 3) * 2 + (orangeCount % 3);
+
+        return (chargedApples * PRICE_APPLE_PENCE) + (chargedOranges * PRICE_ORANGE_PENCE);
+    }
     public static String totalFormatted(List<String> items) {
         int totalPence = totalPence(items);
         int pounds = totalPence / 100;
